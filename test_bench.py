@@ -51,7 +51,7 @@ def pytest_generate_tests(metafunc):
         if (sweep_bs == "all"):
             # this defines the range of all 'possible' batch sizes. The YAML settings of
             # each benchmark would determine which batch sizes will be executed or skipped.
-            batch_size_sweep = [1, 4, 8, 16, 32, 64, 96, 128, 256]
+            batch_size_sweep = [1, 2, 4, 8, 16, 32, 64, 96, 128, 200, 256, 1000]
         else:
             batch_size_sweep = list(map(int, sweep_bs.split(','))) if (sweep_bs) else [None]
 
