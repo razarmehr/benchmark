@@ -1,6 +1,6 @@
 devices:
   MPS:
-    train_batch_size_sweep: [200]
+    train_batch_size_sweep: [256]
     eval_batch_size_sweep: [0]
 eval_benchmark: true
 eval_deterministic: true
