@@ -2,13 +2,13 @@ devices:
   NVIDIA A100-SXM4-40GB:
     eval_batch_size: 128
   MPS:
-    train_batch_size_sweep: [128, 256]
-    eval_batch_size_sweep: [128, 256]
+    train_batch_size_sweep: [128, 256, 512]
+    eval_batch_size_sweep: [128, 256, 512]
 eval_benchmark: true
 eval_deterministic: false
 eval_nograd: true
 not_implemented:
-- evice: cuda
+- device: cuda
   test: train
 train_benchmark: true
 train_deterministic: false
