@@ -1,3 +1,7 @@
+devices:
+  MPS:
+    train_batch_size_sweep: [32]
+    eval_batch_size_sweep: [32]
 eval_benchmark: true
 eval_deterministic: false
 eval_nograd: true
