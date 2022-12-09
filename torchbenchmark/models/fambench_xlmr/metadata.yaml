@@ -3,6 +3,9 @@ devices:
     eval_batch_size: 64
   cpu:
     eval_batch_size: 4
+  MPS:
+    train_batch_size_sweep: [96]
+    eval_batch_size_sweep: [96]
 eval_benchmark: false
 eval_deterministic: false
 eval_nograd: true
