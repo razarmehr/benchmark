@@ -371,10 +371,11 @@ class TorchBench:
             names =  filter(lambda y: t in y, map(lambda x: x["name"], data["benchmarks"]))
             targets.extend(list(names))
         for each in data["benchmarks"]:
-            if each["name"] in targets:
-                out[each["name"]] = each["stats"]["mean"]
+            # if each["name"] in targets:
+            out[each["name"]] = each["stats"]["mean"]
         # Make sure all target tests are available
         for target in targets:
+            target = target[:-1] + "-None" + "]"
             assert out[target], f"Don't find benchmark result of {target} in {filelist[0]}."
         return out
 
@@ -466,6 +467,7 @@ class TorchBenchBisection:
         assert right.digest, "Commit {right.sha} must have a digest"
         out = []
         for target in targets:
+            target = target[:-1] + "-None" + "]"
             # digest could be empty if benchmark timeout
             left_mean = left.digest[target] if len(left.digest) else 0
             right_mean = right.digest[target] if len(right.digest) else 0
