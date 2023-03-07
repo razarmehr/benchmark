@@ -37,17 +37,18 @@ if [ -n "$2" ]; then
     BENCHMARK_FILTER="$2"
 fi
 
-sudo nvidia-smi -ac ${GPU_FREQUENCY}
-export CUDA_VISIBLE_DEVICES="${GPU_LIST}"
-export GOMP_CPU_AFFINITY="${CORE_LIST}"
+# sudo nvidia-smi -ac ${GPU_FREQUENCY}
+# export CUDA_VISIBLE_DEVICES="${GPU_LIST}"
+# export GOMP_CPU_AFFINITY="${CORE_LIST}"
 
 echo "Running benchmark with filter: \"${BENCHMARK_FILTER}\""
 
 # Run the benchmark
 for c in $(seq 1 $NUM_ITER); do
-    taskset -c "${CORE_LIST}" pytest test_bench.py -k "${BENCHMARK_FILTER}" \
+    pytest test_bench.py -k "${BENCHMARK_FILTER}" \
             --benchmark-min-rounds "${NUM_ROUNDS}" \
             --benchmark-json ${DATA_DIR}/${DATA_JSON_PREFIX}_${c}.json \
+            --ignore_machine_config \
             --verbose
 done
 
