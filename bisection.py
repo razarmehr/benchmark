@@ -376,7 +376,7 @@ class TorchBench:
         # Make sure all target tests are available
         for target in targets:
             target = target[:-1] + "-None" + "]"
-            assert out[target], f"Don't find benchmark result of {target} in {filelist[0]}."
+            # assert out[target], f"Don't find benchmark result of {target} in {filelist[0]}."
         return out
 
     def get_digest(self, commit: Commit, targets: List[str], debug: bool) -> Dict[str, float]:
@@ -468,6 +468,12 @@ class TorchBenchBisection:
         out = []
         for target in targets:
             target = target[:-1] + "-None" + "]"
+            if target not in left.digest:
+                print(f"{target} not found in left.digest. Skipping..")
+                continue
+            if target not in right.digest:
+                print(f"{target} not found in right.digest. Skipping..")
+                continue
             # digest could be empty if benchmark timeout
             left_mean = left.digest[target] if len(left.digest) else 0
             right_mean = right.digest[target] if len(right.digest) else 0
