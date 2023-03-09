@@ -114,6 +114,8 @@ def analyze_abtest_result_dir(result_dir: str):
         for key_index, key in enumerate(means):
             out[key_index+1].append(means[key])
             if delta and index == 1:
+                if key not in reference:
+                    reference[key] = 0.0
                 out[0].append("Delta")
                 out[key_index+1].append(get_delta_str(reference[key], means[key]))
     out_str = tabulate(out, headers='firstrow')
