@@ -88,7 +88,7 @@ def get_means(data):
         rc[name] = mean
     return rc
 
-def analyze_abtest_result_dir(result_dir: str):
+def analyze_abtest_result_dir(result_dir: str, targets: List[str]):
     dirs = [ os.path.join(result_dir, name) for name in os.listdir(result_dir) if os.path.isdir(os.path.join(result_dir, name)) ]
     delta = False
     json_files = list(filter(len, map(find_latest_json_file, dirs)))
@@ -100,6 +100,10 @@ def analyze_abtest_result_dir(result_dir: str):
     with open(json_files[0], "r") as fp:
         cur_result = json.load(fp)
         means = get_means(cur_result)
+    for target in targets:
+        target = target[:-1] + "-None" + "]"
+        if target not in means:
+            means[target] = 0.0
     for key in means:
         out.append([])
         out[-1].append(key)
@@ -109,13 +113,15 @@ def analyze_abtest_result_dir(result_dir: str):
         header = f"Run {os.path.basename(os.path.dirname(json_file))}"
         out[0].append(header)
         means = get_means(jsonobj)
+        for target in targets:
+            target = target[:-1] + "-None" + "]"
+            if target not in means:
+                means[target] = 0.0
         if delta and index == 0:
             reference = means
         for key_index, key in enumerate(means):
             out[key_index+1].append(means[key])
             if delta and index == 1:
-                if key not in reference:
-                    reference[key] = 0.0
                 out[0].append("Delta")
                 out[key_index+1].append(get_delta_str(reference[key], means[key]))
     out_str = tabulate(out, headers='firstrow')
@@ -471,11 +477,11 @@ class TorchBenchBisection:
         for target in targets:
             target = target[:-1] + "-None" + "]"
             if target not in left.digest:
-                print(f"{target} not found in left.digest. Skipping..")
-                continue
+                print(f"{target} not found in left.digest. Setting it to 0...")
+                left.digest[target] = 0.0
             if target not in right.digest:
-                print(f"{target} not found in right.digest. Skipping..")
-                continue
+                print(f"{target} not found in right.digest. Setting it to 0...")
+                right.digest[target] = 0.0
             # digest could be empty if benchmark timeout
             left_mean = left.digest[target] if len(left.digest) else 0
             right_mean = right.digest[target] if len(right.digest) else 0
@@ -547,7 +553,7 @@ class TorchBenchBisection:
             json.dump(json_obj, outfile, indent=2)
 
     def output_abtest_result(self):
-        abtest_result = analyze_abtest_result_dir(self.workdir)
+        abtest_result = analyze_abtest_result_dir(self.workdir, self.targets)
         with open(self.output_json, 'w') as outfile:
             outfile.write(abtest_result)
         print(abtest_result)
