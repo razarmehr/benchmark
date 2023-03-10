@@ -74,7 +74,9 @@ def find_latest_json_file(result_dir: str):
     return str()
 
 def get_delta_str(reference: float, current: float) -> str:
-    delta_num = ((current - reference) / current * 100)
+    delta_num = 0.0
+    if current != 0.0:
+        delta_num = ((current - reference) / current * 100)
     delta_str = "{:+3f}".format(delta_num) + "%"
     if (abs(delta_num) >= 5):
         delta_str = delta_str + "*"
